@@ -23,7 +23,7 @@ viewports.forEach((viewport) => {
           });
         });
 
-      cy.log('num of product items is decreased after clicking on size button');
+      cy.log('Num of product items is decreased after clicking on size button');
       cy.get("[class*='Product__Container']").then((productItems) => {
         const productCount = productItems.length;
         cy.contains('span', sizes[0]).click();
@@ -32,14 +32,14 @@ viewports.forEach((viewport) => {
           .should('be.lt', productCount);
       });
 
-      cy.log('active size button changed color');
+      cy.log('Active size button changed color');
       cy.contains('span', sizes[0]).should(
         'have.css',
         'background-color',
         blackColor
       );
 
-      cy.log('other sizes button remain unchanged');
+      cy.log('Other sizes button remain unchanged');
       sizes.forEach((size, index) => {
         if (index !== 0 && index !== 1) {
           cy.contains('span', size).should(

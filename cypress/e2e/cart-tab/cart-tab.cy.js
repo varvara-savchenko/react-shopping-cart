@@ -1,13 +1,13 @@
 const viewports = ['macbook-15', 'iphone-x'];
 
 viewports.forEach((viewport) => {
-  describe(`${viewport}: test for a general purchase flow`, () => {
+  describe(`${viewport}: test for cart tab component`, () => {
     beforeEach(() => {
       cy.viewport(viewport);
       cy.visit('/');
     });
 
-    it('Test cart tab empty state', () => {
+    it('should check cart tab empty state', () => {
       cy.log("Open cart tab and verify it's empty");
       cy.get("[class*='CartIcon']").click();
       cy.checkCartState({ value: '0' });
@@ -23,12 +23,12 @@ viewports.forEach((viewport) => {
       cy.on('window:alert', (message) => {
         expect(message).to.deep.eq('Add some product in the cart!');
       });
-      cy.log('Close cart tab and verify');
+      cy.log('Close cart tab and verify changes');
       cy.get("[class*='CartButton']").click();
       cy.contains("[class*='Cart__Container']").should('not.exist');
     });
 
-    it('Test interactions with items quantity inside cart tab', () => {
+    it('should check interactions with items quantity inside cart tab', () => {
       cy.log('Add product to cart');
       cy.contains('button', 'Add to cart').first().click();
 
@@ -38,23 +38,23 @@ viewports.forEach((viewport) => {
         .and('have.length', 1);
       cy.checkCartState({ value: '1' });
 
-      cy.log('check decrement button is disabled');
+      cy.log('Verify decrement button is disabled');
       cy.get("[class*='CartProduct__ChangeQuantity']")
         .first()
         .should('be.disabled');
 
-      cy.log('increament number of products and verify changes');
+      cy.log('Increament number of products and verify changes');
       cy.get("[class*='CartProduct__ChangeQuantity']").last().click();
       cy.checkCartState({ value: '2' });
 
-      cy.log('decrement number of products and verify changes');
+      cy.log('Decrement number of products and verify changes');
       cy.get("[class*='CartProduct__ChangeQuantity']").first().click();
       cy.checkCartState({ value: '1' });
 
       cy.log('Remove product item and verify changes');
       cy.get("[class*='CartProduct__DeleteButton']").click();
       cy.checkCartState({ value: '0' });
-      cy.contains('p', 'Add some products in the cart :)').should('be.visible');
+      cy.get("[class*='CartProductsEmpty']").should('be.visible');
     });
   });
 });
