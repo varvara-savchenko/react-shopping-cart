@@ -23,6 +23,7 @@ viewports.forEach((viewport) => {
       cy.on('window:alert', (message) => {
         expect(message).to.deep.eq('Add some product in the cart!');
       });
+
       cy.log('Close cart tab and verify changes');
       cy.get("[class*='CartButton']").click();
       cy.contains("[class*='Cart__Container']").should('not.exist');

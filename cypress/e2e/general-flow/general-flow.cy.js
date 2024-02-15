@@ -6,11 +6,21 @@ viewports.forEach((viewport) => {
       cy.viewport(viewport);
       cy.visit('/');
 
-      cy.log('Product items are visible');
+      cy.log('Elements for each product item are visible');
       cy.get("[class*='Product__Container']")
-        .should('have.length', 16)
+        .should('have.length.gte', 1) //assuming this value is dynamic
         .each((productItem) => {
-          expect(productItem).to.be.visible;
+          cy.wrap(productItem)
+            .should('be.visible')
+            .within(() => {
+              const productItemElements = ['Title', 'Val', 'BuyButton'];
+              productItemElements.forEach((element) => {
+                cy.get(`[class*='Product__${element}']`)
+                  .should('be.visible')
+                  .invoke('text')
+                  .should('not.be.empty');
+              });
+            });
         });
 
       cy.log('Get a random product item');
@@ -18,22 +28,16 @@ viewports.forEach((viewport) => {
         .selectRandomItem()
         .within(() => {
           cy.log('Save product title');
-          cy.get("[class*='Product__Title']")
-            .should('be.visible')
-            .invoke('text')
-            .as('productTitle');
+          cy.get("[class*='Product__Title']").invoke('text').as('productTitle');
 
           cy.log('Save product price');
           cy.get("[class*='Product__Val']")
-            .should('be.visible')
             .invoke('text')
             .trimSpaces()
             .as('productPrice');
 
           cy.log('Add item to cart');
-          cy.contains('button', 'Add to cart')
-            .scrollIntoView()
-            .click({ force: true }); //to avoid flakiness
+          cy.contains('button', 'Add to cart').click({ force: true }); //to avoid flakiness on responsive viewport
         });
 
       cy.log('Product description inside cart tab is correct');
@@ -55,7 +59,9 @@ viewports.forEach((viewport) => {
         });
       });
 
-      cy.log('Proceed to checkout and verify alert message');
+      cy.log(
+        'Proceed to checkout and verify alert message has correct price and text'
+      );
       cy.contains('button', 'Checkout').click();
       cy.on('window:alert', (message) => {
         const messagePrice = message.match(/:\s*(.*)/)[1];

@@ -26,14 +26,14 @@ viewports.forEach((viewport) => {
       cy.log('Num of product items is decreased after clicking on size button');
       cy.get("[class*='Product__Container']").then((productItems) => {
         const productCount = productItems.length;
-        cy.contains('span', sizes[0]).click();
+        cy.contains('span', sizes[2]).click();
         cy.get("[class*='Product__Container']")
           .its('length')
           .should('be.lt', productCount);
       });
 
       cy.log('Active size button changed color');
-      cy.contains('span', sizes[0]).should(
+      cy.contains('span', sizes[2]).should(
         'have.css',
         'background-color',
         blackColor
@@ -41,7 +41,7 @@ viewports.forEach((viewport) => {
 
       cy.log('Other sizes button remain unchanged');
       sizes.forEach((size, index) => {
-        if (index !== 0 && index !== 1) {
+        if (index !== 2) {
           cy.contains('span', size).should(
             'have.css',
             'background-color',
@@ -49,6 +49,12 @@ viewports.forEach((viewport) => {
           );
         }
       });
+
+      cy.log('Add product to cart and verify that size is correct');
+      cy.contains('button', 'Add to cart')
+        .selectRandomItem()
+        .click({ force: true }); //to avoid flakiness on responsive viewport
+      cy.get("[class*='CartProduct__Desc']").should('contain.text', sizes[2]);
     });
   });
 });

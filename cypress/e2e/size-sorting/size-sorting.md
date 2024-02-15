@@ -11,5 +11,8 @@ I want to be able to sort product items by size
 
     When the user clicks on the first size label
     Then the number of product items should decrease
-    And the clicked size button should change its background color to black
-    And the background color of other size buttons should remain unchanged
+    And the clicked size label should change its background color to black
+    And the background color of other size labels should remain unchanged
+
+    When the user checks information about item size in the cart tab
+    Then item size matches user's selection
